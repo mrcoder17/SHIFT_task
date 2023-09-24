@@ -33,8 +33,11 @@ public class IntervalService {
                 mergedIntervals.add(interval);
             }
         }
-
+        if (!intervalRepository.existsById(1L)) {
+            intervalRepository.save(new IntervalEntity());
+        }
         intervalRepository.saveAll(mergedIntervals);
+
     }
 
     public IntervalEntity findMinInterval(String kind) {

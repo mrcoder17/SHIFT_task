@@ -20,8 +20,8 @@ public class IntervalController {
     }
 
     @GetMapping("/min")
-    public ResponseEntity<IntervalEntity> getMinInterval(@RequestParam("kind") String kind) {
+    public IntervalEntity getMinInterval(@RequestParam("kind") String kind) {
         IntervalEntity minInterval = intervalService.findMinInterval(kind);
-        return ResponseEntity.ok(minInterval);
+        return ResponseEntity.ok(minInterval).getBody();
     }
 }

@@ -1,17 +1,20 @@
 package ru.nsu.boxberger.shift_task;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "INTERVALS")
 public class IntervalEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "ID")
     private Long id;
+
+    @Column(name = "KIND")
     private String kind;
+    @Column(name = "STARTVALUE")
     private String startValue;
+    @Column(name = "ENDVALUE")
     private String endValue;
 
     public String getStartValue() {
