@@ -14,14 +14,15 @@ public class IntervalController {
     private IntervalService intervalService;
 
     @PostMapping("/merge")
-    public ResponseEntity<Void> mergeIntervals(@RequestParam("kind") String kind, @RequestBody List<IntervalEntity> intervals) {
+    public ResponseEntity<Void> mergeIntervals(@RequestParam("kind") String kind, @RequestBody List<List<String>> intervals) {
         intervalService.mergeAndSaveIntervals(kind, intervals);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/min")
-    public IntervalEntity getMinInterval(@RequestParam("kind") String kind) {
+    public ResponseEntity<String> getMinInterval(@RequestParam("kind") String kind) {
         IntervalEntity minInterval = intervalService.findMinInterval(kind);
-        return ResponseEntity.ok(minInterval).getBody();
+        String intervalString = "[" + minInterval.getStartValue() + ", " + minInterval.getEndValue() + "]";
+        return ResponseEntity.ok(intervalString);
     }
 }

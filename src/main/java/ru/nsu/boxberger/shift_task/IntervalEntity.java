@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "INTERVALS")
 public class IntervalEntity {
+
+    public IntervalEntity() {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "ID")
@@ -16,6 +20,10 @@ public class IntervalEntity {
     private String startValue;
     @Column(name = "ENDVALUE")
     private String endValue;
+
+    public void setKind(String kind) {
+        this.kind = kind;
+    }
 
     public String getStartValue() {
         return startValue;

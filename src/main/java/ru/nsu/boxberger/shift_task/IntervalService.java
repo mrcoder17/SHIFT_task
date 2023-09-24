@@ -11,34 +11,51 @@ public class IntervalService {
 
     @Autowired
     private IntervalRepository intervalRepository;
-
-    public void mergeAndSaveIntervals(String kind, List<IntervalEntity> intervals) {
-
-        List<IntervalEntity> existingIntervals = intervalRepository.findByKind(kind);
-        List<IntervalEntity> mergedIntervals = new ArrayList<>();
-
-        for (IntervalEntity interval : intervals) {
-            boolean merged = false;
-
-            for (IntervalEntity existingInterval : existingIntervals) {
-                if (interval.getStartValue().compareTo(existingInterval.getEndValue()) == 0 || interval.getEndValue().compareTo(existingInterval.getStartValue()) == 0) {
-                    existingInterval.setStartValue(interval.getStartValue().compareTo(existingInterval.getStartValue()) < 0 ? interval.getStartValue() : existingInterval.getStartValue());
-                    existingInterval.setEndValue(interval.getEndValue().compareTo(existingInterval.getEndValue()) > 0 ? interval.getEndValue() : existingInterval.getEndValue());
-                    merged = true;
-                    break;
-                }
-            }
-
-            if (!merged) {
-                mergedIntervals.add(interval);
-            }
+public void mergeAndSaveIntervals(String kind, List<List<String>> intervals) {
+    intervals.sort((a, b) -> {
+        String startA = a.get(0);
+        String startB = b.get(0);
+        if (startA.equals(startB)) {
+            String endA = a.get(1);
+            String endB = b.get(1);
+            return endA.compareTo(endB);
         }
-        if (!intervalRepository.existsById(1L)) {
-            intervalRepository.save(new IntervalEntity());
-        }
-        intervalRepository.saveAll(mergedIntervals);
+        return startA.compareTo(startB);
+    });
 
+    List<List<String>> mergedIntervals = new ArrayList<>();
+
+    List<String> currentInterval = intervals.get(0);
+    for (int i = 1; i < intervals.size(); i++) {
+        List<String> nextInterval = intervals.get(i);
+
+        String currentEnd = currentInterval.get(1);
+        String nextStart = nextInterval.get(0);
+
+        if (currentEnd.compareTo(nextStart) >= 0) {
+            String currentStart = currentInterval.get(0);
+            String nextEnd = nextInterval.get(1);
+            currentInterval.set(0, currentStart.compareTo(nextStart) < 0 ? currentStart : nextStart);
+            currentInterval.set(1, currentEnd.compareTo(nextEnd) > 0 ? currentEnd : nextEnd);
+        } else {
+            mergedIntervals.add(currentInterval);
+            currentInterval = nextInterval;
+        }
     }
+    mergedIntervals.add(currentInterval);
+
+    List<IntervalEntity> intervalEntities = new ArrayList<>();
+    for (List<String> intervalData : mergedIntervals) {
+        IntervalEntity interval = new IntervalEntity();
+        interval.setKind(kind);
+        interval.setStartValue(intervalData.get(0));
+        interval.setEndValue(intervalData.get(1));
+        intervalEntities.add(interval);
+    }
+
+    intervalRepository.saveAll(intervalEntities);
+}
+
 
     public IntervalEntity findMinInterval(String kind) {
         return intervalRepository.findMinIntervalByKind(kind);
