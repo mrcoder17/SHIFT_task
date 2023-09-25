@@ -1,13 +1,10 @@
-package ru.nsu.boxberger.shift_task;
+package ru.nsu.boxberger.shift_task.entity;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "INTERVALS")
 public class IntervalEntity {
-
-    public IntervalEntity() {
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
