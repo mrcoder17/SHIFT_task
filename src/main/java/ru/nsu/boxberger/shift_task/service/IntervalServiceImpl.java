@@ -71,7 +71,7 @@ public class IntervalServiceImpl implements IntervalService {
 
     @Override
     public String findMinInterval(String kind) {
-        return "[" + intervalRepository.findMinIntervalByKind(kind) +
-                "," + intervalRepository.findMinIntervalByKind(kind) + "]";
+        return "[" + intervalRepository.findMinIntervalByKind(kind).getStartValue() +
+                "," + intervalRepository.findMinIntervalByKind(kind).getEndValue() + "]";
     }
 }
